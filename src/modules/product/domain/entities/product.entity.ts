@@ -1,8 +1,8 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -64,9 +64,7 @@ export class Product {
    */
   decreaseStock(quantity: number): void {
     if (this.stock < quantity) {
-      throw new Error(
-        `Insufficient stock. Current: ${this.stock}, Requested: ${quantity}`,
-      );
+      throw new Error(`Insufficient stock. Current: ${this.stock}, Requested: ${quantity}`);
     }
     this.stock -= quantity;
   }

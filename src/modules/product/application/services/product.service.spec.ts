@@ -1,4 +1,4 @@
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductService } from './product.service';
 import { IProductRepository } from '../../domain/repositories/product.repository.interface';
@@ -166,9 +166,7 @@ describe('ProductService', () => {
 
   describe('findLowStock', () => {
     it('should return products below threshold', async () => {
-      const products = [
-        createMockProduct(1, { name: 'Low Stock Item', stock: 5 }),
-      ];
+      const products = [createMockProduct(1, { name: 'Low Stock Item', stock: 5 })];
       mockRepository.findLowStock.mockResolvedValue(products);
 
       const result = await service.findLowStock(10);

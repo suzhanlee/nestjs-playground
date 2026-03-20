@@ -53,7 +53,9 @@ describe('Product Entity', () => {
       product.price = 1000;
       product.stock = 0;
 
-      expect(() => product.decreaseStock(1)).toThrow('Insufficient stock. Current: 0, Requested: 1');
+      expect(() => product.decreaseStock(1)).toThrow(
+        'Insufficient stock. Current: 0, Requested: 1',
+      );
     });
 
     it('should throw error when trying to decrease zero', () => {

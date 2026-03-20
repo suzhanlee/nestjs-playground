@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '../../domain/entities/product.entity';
 import { IProductRepository } from '../../domain/repositories/product.repository.interface';
 import { CreateProductDto } from '../dto/create-product.dto';

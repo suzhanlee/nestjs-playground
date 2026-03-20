@@ -41,10 +41,7 @@ describe('ProductController (E2E)', () => {
   afterAll(async () => {
     // Clean up database
     if (dataSource) {
-      await dataSource.createQueryBuilder()
-        .delete()
-        .from(Product)
-        .execute();
+      await dataSource.createQueryBuilder().delete().from(Product).execute();
     }
     await app.close();
   });
@@ -52,10 +49,7 @@ describe('ProductController (E2E)', () => {
   afterEach(async () => {
     // Clean up after each test
     if (dataSource) {
-      await dataSource.createQueryBuilder()
-        .delete()
-        .from(Product)
-        .execute();
+      await dataSource.createQueryBuilder().delete().from(Product).execute();
     }
   });
 
@@ -105,10 +99,7 @@ describe('ProductController (E2E)', () => {
         name: 'Incomplete Product',
       };
 
-      return request(app.getHttpServer())
-        .post('/api/products')
-        .send(productData)
-        .expect(400);
+      return request(app.getHttpServer()).post('/api/products').send(productData).expect(400);
     });
 
     it('should reject request with negative price', () => {
@@ -118,10 +109,7 @@ describe('ProductController (E2E)', () => {
         stock: 10,
       };
 
-      return request(app.getHttpServer())
-        .post('/api/products')
-        .send(productData)
-        .expect(400);
+      return request(app.getHttpServer()).post('/api/products').send(productData).expect(400);
     });
 
     it('should reject request with negative stock', () => {
@@ -131,10 +119,7 @@ describe('ProductController (E2E)', () => {
         stock: -5,
       };
 
-      return request(app.getHttpServer())
-        .post('/api/products')
-        .send(productData)
-        .expect(400);
+      return request(app.getHttpServer()).post('/api/products').send(productData).expect(400);
     });
 
     it('should reject request with extra fields', () => {
@@ -145,19 +130,13 @@ describe('ProductController (E2E)', () => {
         extraField: 'should be rejected',
       };
 
-      return request(app.getHttpServer())
-        .post('/api/products')
-        .send(productData)
-        .expect(400);
+      return request(app.getHttpServer()).post('/api/products').send(productData).expect(400);
     });
   });
 
   describe('GET /api/products', () => {
     it('should return empty array when no products exist', () => {
-      return request(app.getHttpServer())
-        .get('/api/products')
-        .expect(200)
-        .expect([]);
+      return request(app.getHttpServer()).get('/api/products').expect(200).expect([]);
     });
 
     it('should return all products', async () => {
@@ -198,9 +177,7 @@ describe('ProductController (E2E)', () => {
     });
 
     it('should return 404 for non-existent product', () => {
-      return request(app.getHttpServer())
-        .get('/api/products/999999')
-        .expect(404);
+      return request(app.getHttpServer()).get('/api/products/999999').expect(404);
     });
   });
 
@@ -238,15 +215,11 @@ describe('ProductController (E2E)', () => {
 
       const productId = createResponse.body.id;
 
-      return request(app.getHttpServer())
-        .delete(`/api/products/${productId}`)
-        .expect(204);
+      return request(app.getHttpServer()).delete(`/api/products/${productId}`).expect(204);
     });
 
     it('should return 404 when deleting non-existent product', () => {
-      return request(app.getHttpServer())
-        .delete('/api/products/999999')
-        .expect(404);
+      return request(app.getHttpServer()).delete('/api/products/999999').expect(404);
     });
 
     it('should return 404 when getting deleted product', async () => {
@@ -256,13 +229,9 @@ describe('ProductController (E2E)', () => {
 
       const productId = createResponse.body.id;
 
-      await request(app.getHttpServer())
-        .delete(`/api/products/${productId}`)
-        .expect(204);
+      await request(app.getHttpServer()).delete(`/api/products/${productId}`).expect(204);
 
-      return request(app.getHttpServer())
-        .get(`/api/products/${productId}`)
-        .expect(404);
+      return request(app.getHttpServer()).get(`/api/products/${productId}`).expect(404);
     });
   });
 

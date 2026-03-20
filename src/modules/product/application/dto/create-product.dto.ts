@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, IsOptional, Min, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 /**
  * DTO for creating a new product
@@ -24,7 +24,11 @@ export class CreateProductDto {
   @MaxLength(255, { message: 'Name must not exceed 255 characters' })
   name: string;
 
-  @ApiProperty({ example: 'High-performance laptop', description: 'Product description', required: false })
+  @ApiProperty({
+    example: 'High-performance laptop',
+    description: 'Product description',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   @MaxLength(1000, { message: 'Description must not exceed 1000 characters' })

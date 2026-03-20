@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Put, Patch, Delete, Param, Body, Query, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from '../application/services/product.service';
 import { CreateProductDto } from '../application/dto/create-product.dto';
 import { UpdateProductDto } from '../application/dto/update-product.dto';
@@ -84,7 +96,10 @@ export class ProductController {
    * Spring: @PutMapping("/{id}") public Product update(@PathVariable Long id, @RequestBody UpdateProductRequest request)
    */
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateProductDto): Promise<ProductResponseDto> {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateProductDto,
+  ): Promise<ProductResponseDto> {
     return await this.productService.update(+id, dto);
   }
 
@@ -113,7 +128,10 @@ export class ProductController {
    * POST /products/:id/decrease-stock
    */
   @Post(':id/decrease-stock')
-  async decreaseStock(@Param('id') id: string, @Body() dto: DecreaseStockDto): Promise<ProductResponseDto> {
+  async decreaseStock(
+    @Param('id') id: string,
+    @Body() dto: DecreaseStockDto,
+  ): Promise<ProductResponseDto> {
     return await this.productService.decreaseStock(+id, dto);
   }
 
@@ -122,7 +140,10 @@ export class ProductController {
    * POST /products/:id/increase-stock
    */
   @Post(':id/increase-stock')
-  async increaseStock(@Param('id') id: string, @Body() body: { quantity: number }): Promise<ProductResponseDto> {
+  async increaseStock(
+    @Param('id') id: string,
+    @Body() body: { quantity: number },
+  ): Promise<ProductResponseDto> {
     return await this.productService.increaseStock(+id, body.quantity);
   }
 
