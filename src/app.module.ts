@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './modules/product/product.module';
-import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
   imports: [

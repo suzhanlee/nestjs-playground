@@ -1,10 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 /**
@@ -28,9 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message:
         typeof exceptionResponse === 'string'
           ? exceptionResponse
-          : (exceptionResponse as any).message ||
-            exception.message ||
-            'An error occurred',
+          : (exceptionResponse as any).message || exception.message || 'An error occurred',
     };
 
     // Log error for debugging (in production, use a proper logger)
@@ -50,14 +42,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal server error';
+      exception instanceof HttpException ? exception.message : 'Internal server error';
 
     const errorResponse = {
       statusCode: status,
