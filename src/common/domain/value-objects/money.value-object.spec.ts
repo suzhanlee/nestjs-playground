@@ -15,7 +15,7 @@ describe('Money Value Object', () => {
     });
 
     it('should create Money from decimal', () => {
-      const money = Money.fromDecimal(100.50);
+      const money = Money.fromDecimal(100.5);
       expect(money.toCents()).toBe(10050);
     });
 

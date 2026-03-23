@@ -44,7 +44,10 @@ export interface IEventDispatcher {
    * Dispatch all domain events from an aggregate and clear them
    * @param aggregate - The aggregate with domain events
    */
-  dispatchEvents(aggregate: { domainEvents: IDomainEvent[]; clearDomainEvents(): void }): Promise<void>;
+  dispatchEvents(aggregate: {
+    domainEvents: IDomainEvent[];
+    clearDomainEvents(): void;
+  }): Promise<void>;
 
   /**
    * Register a handler for a specific event type

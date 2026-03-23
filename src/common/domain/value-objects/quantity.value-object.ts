@@ -59,9 +59,7 @@ export class Quantity {
   subtract(other: Quantity): Quantity {
     const result = this.value - other.value;
     if (result < 0) {
-      throw new InvalidQuantityException(
-        `Cannot subtract: result would be negative (${result})`,
-      );
+      throw new InvalidQuantityException(`Cannot subtract: result would be negative (${result})`);
     }
     return new Quantity(result);
   }

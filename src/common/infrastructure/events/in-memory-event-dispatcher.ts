@@ -1,4 +1,7 @@
-import { IEventDispatcher, IDomainEventHandler } from '../../domain/ports/event-dispatcher.interface';
+import {
+  IEventDispatcher,
+  IDomainEventHandler,
+} from '../../domain/ports/event-dispatcher.interface';
 import { IDomainEvent } from '../../domain/events/domain-event.interface';
 
 /**
