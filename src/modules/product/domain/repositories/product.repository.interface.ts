@@ -1,4 +1,4 @@
-import { Product } from '../entities/product.entity';
+import { Product } from '../product.entity';
 
 /**
  * Product Repository Interface (similar to Spring Data Repository)
