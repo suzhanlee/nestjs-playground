@@ -1,11 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsPositive } from 'class-validator';
 
 /**
- * DTO for decreasing product stock
+ * Request DTO for increasing product stock
+ *
+ * Contains only validation logic.
  */
-export class DecreaseStockDto {
-  @ApiProperty({ example: 1, description: 'Quantity to decrease' })
+export class IncreaseStockRequest {
+  /**
+   * @example 5
+   * @description Quantity to increase
+   */
   @IsNumber({}, { message: 'Quantity must be a number' })
   @IsPositive({ message: 'Quantity must be positive' })
   quantity: number;
