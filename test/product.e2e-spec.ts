@@ -3,13 +3,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { DataSource } from 'typeorm';
-import { Product } from '../src/modules/product/domain/entities/product.entity';
+import { Product } from '../src/modules/product/domain';
 
 /**
  * E2E Tests for Product Module
- * Spring Equivalent: @SpringBootTest with @WebMvcTest
  *
- * Tests the entire flow from HTTP request to database
+ * These tests verify the entire flow from HTTP request to database,
+ * ensuring all components work together correctly.
  */
 describe('ProductController (E2E)', () => {
   let app: INestApplication;
@@ -74,6 +74,11 @@ describe('ProductController (E2E)', () => {
           expect(res.body.stock).toBe(productData.stock);
           expect(res.body).toHaveProperty('createdAt');
           expect(res.body).toHaveProperty('updatedAt');
+          expect(res.body).toHaveProperty('priceFormatted');
+          expect(res.body).toHaveProperty('totalValue');
+          expect(res.body).toHaveProperty('isInStock');
+          expect(res.body).toHaveProperty('isLowStock');
+          expect(res.body).toHaveProperty('isOutOfStock');
         });
     });
 
@@ -182,7 +187,7 @@ describe('ProductController (E2E)', () => {
   });
 
   describe('PATCH /api/products/:id', () => {
-    it('should update a product', async () => {
+    it('should update product name', async () => {
       const createResponse = await request(app.getHttpServer())
         .post('/api/products')
         .send({ name: 'Original Name', price: 1000, stock: 10 });
@@ -195,8 +200,36 @@ describe('ProductController (E2E)', () => {
         .expect(200)
         .expect((res) => {
           expect(res.body.name).toBe('Updated Name');
-          expect(res.body.price).toBe(1000);
         });
+    });
+
+    it('should update product price', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/api/products')
+        .send({ name: 'Test Product', price: 10000, stock: 10 });
+
+      const productId = createResponse.body.id;
+
+      return request(app.getHttpServer())
+        .patch(`/api/products/${productId}`)
+        .send({ price: 14000 }) // Within 50% limit
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.price).toBe(14000);
+        });
+    });
+
+    it('should reject price increase over 50%', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/api/products')
+        .send({ name: 'Test Product', price: 10000, stock: 10 });
+
+      const productId = createResponse.body.id;
+
+      return request(app.getHttpServer())
+        .patch(`/api/products/${productId}`)
+        .send({ price: 16000 }) // Over 50% increase
+        .expect(400);
     });
 
     it('should return 404 when updating non-existent product', () => {
@@ -204,6 +237,24 @@ describe('ProductController (E2E)', () => {
         .patch('/api/products/999999')
         .send({ name: 'New Name' })
         .expect(404);
+    });
+  });
+
+  describe('POST /api/products/:id/change-price', () => {
+    it('should change product price', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/api/products')
+        .send({ name: 'Test Product', price: 10000, stock: 10 });
+
+      const productId = createResponse.body.id;
+
+      return request(app.getHttpServer())
+        .post(`/api/products/${productId}/change-price`)
+        .send({ price: 14000 })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.price).toBe(14000);
+        });
     });
   });
 
