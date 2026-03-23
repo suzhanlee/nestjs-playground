@@ -1,18 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
-
 /**
  * Standard API response wrapper (similar to ResponseEntity in Spring)
  */
 export class ApiResponseDto<T> {
-  @ApiProperty()
+  /** Success status */
   success: boolean;
 
-  @ApiProperty()
+  /** Response message */
   message: string;
 
+  /** Optional response data */
   data?: T;
 
-  @ApiProperty()
+  /** ISO timestamp of response */
   timestamp: string;
 
   constructor(success: boolean, message: string, data?: T) {

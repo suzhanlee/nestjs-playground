@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IDomainEventHandler, ProductCreatedEvent } from '../../../../common';
+import { IDomainEventHandler, ProductCreatedEvent } from '../../../../../common';
 
 /**
  * Handler for ProductCreatedEvent

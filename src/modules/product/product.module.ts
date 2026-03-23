@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, Inject } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductController } from './presentation/product.controller';
 import { ProductApplicationService } from './application/services/product.application.service';
 import { Product } from './domain';
 import { ProductRepositoryImpl } from './infrastructure/repositories/product.repository.impl';
 import { IProductRepository } from './domain/repositories/product.repository.interface';
-import { IEventDispatcher, InMemoryEventDispatcher } from '../common';
+import { IEventDispatcher, InMemoryEventDispatcher } from '../../common';
 import {
   ProductCreatedHandler,
   PriceChangedHandler,
@@ -17,7 +17,7 @@ import {
   ProductPriceChangedEvent,
   StockDecreasedEvent,
   StockLowEvent,
-} from '../common';
+} from '../../common';
 
 /**
  * Product Module
@@ -84,13 +84,13 @@ import {
   exports: [
     // Export for other modules to use
     ProductApplicationService,
-    IProductRepository,
+    'IProductRepository',
     'IEventDispatcher',
   ],
 })
 export class ProductModule {
   constructor(
-    private readonly eventDispatcher: IEventDispatcher,
+    @Inject('IEventDispatcher') private readonly eventDispatcher: IEventDispatcher,
     private readonly productCreatedHandler: ProductCreatedHandler,
     private readonly priceChangedHandler: PriceChangedHandler,
     private readonly stockDecreasedHandler: StockDecreasedHandler,

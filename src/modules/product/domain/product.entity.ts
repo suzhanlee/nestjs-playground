@@ -76,7 +76,6 @@ export class Product {
    * Stock quantity
    * Internally stored as number for TypeORM, exposed as Quantity value object
    */
-  @Column({ type: 'int', nullable: false, default: 0 })
   private _stock: number;
 
   /**
@@ -97,6 +96,14 @@ export class Product {
   @Column({ length: 1000, nullable: true })
   get description(): string | null {
     return this._description;
+  }
+
+  @Column({ type: 'int', nullable: false, default: 0 })
+  get stock(): number {
+    return this._stock;
+  }
+  set stock(value: number) {
+    this._stock = value;
   }
 
   @CreateDateColumn({ name: 'created_at' })
