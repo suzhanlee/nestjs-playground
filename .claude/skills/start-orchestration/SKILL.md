@@ -1,5 +1,5 @@
 ---
-name: startOrchestration
+name: start-orchestration
 description: Initialize the orchestration workflow for feature development. Sets up state tracking and prepares for interview phase.
 ---
 

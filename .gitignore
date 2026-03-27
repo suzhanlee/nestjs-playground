@@ -37,12 +37,14 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+.claude/settings.local.json
 
 # Temp
 *.swp
 *.swo
 *~
 .tmp
+/state
 
 # Docker
 docker-compose.override.yml
