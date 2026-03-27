@@ -85,18 +85,4 @@ else
     echo "jq not available, skipping JSON output" >> "$LOG_FILE"
 fi
 
-# Create JSON output file
-JSON_FILE="$LOG_DIR/validation_${SKILL_NAME}_${TIMESTAMP}.json"
-cat > "$JSON_FILE" << EOF
-{
-  "skill": "$SKILL_NAME",
-  "validate_prompt": $(echo "$VALIDATE_PROMPT" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g'),
-  "timestamp": "$(date -Iseconds)"
-}
-EOF
-
-# Output to stderr (visible in Claude context)
-echo "🔧 SKILL VALIDATION [$SKILL_NAME]: $VALIDATE_PROMPT" >> "$LOG_FILE"
-echo "JSON saved to: $JSON_FILE" >> "$LOG_FILE"
-
 exit 0
