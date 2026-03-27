@@ -192,9 +192,9 @@ export class ProductRepositoryImpl implements IProductRepository {
 
 ### Phase 1: test-case.md 분석
 
-1. **세션 디렉토리 찾기**
+1. **test-case.md 확인**
    ```bash
-   ls -lt .claude/session-env/ | head -5
+   ls -la state/
    ```
 
 2. **test-case.md 읽기**
@@ -522,7 +522,7 @@ export class ProductModule {}
 
 ```bash
 # test-case.md의 테스트 케이스 목록 추출
-grep -E "TC-E2E-|TC-UNIT-" .claude/session-env/{sessionId}/test-case.md
+grep -E "TC-E2E-|TC-UNIT-" state/test-case.md
 
 # 구현된 테스트 파일 확인
 find test/ -name "*.e2e-spec.ts"
@@ -564,11 +564,8 @@ npm run test:cov           # 커버리지
 ### Step 1: 세션 및 테스트 케이스 찾기
 
 ```bash
-# 가장 최신 세션 디렉토리 찾기
-ls -lt .claude/session-env/ | head -2
-
 # test-case.md 확인
-cat .claude/session-env/{sessionId}/test-case.md
+cat state/test-case.md
 ```
 
 ### Step 2: 테스트 케이스 파싱

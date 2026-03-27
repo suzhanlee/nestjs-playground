@@ -10,7 +10,7 @@ allowed-tools:
 validate_prompt: |
   dod:
     - id: "1"
-      description: "결과 파일이 해당 위치(.claude/session-env/{sessionId}/test-case.md)에 새로 생겼는가"
+      description: "결과 파일이 해당 위치(state/test-case.md)에 새로 생겼는가"
     - id: "2"
       description: "모든 핵심 기능에 대한 E2E 테스트 케이스가 포함되었는가"
     - id: "3"
@@ -113,14 +113,11 @@ validate_prompt: |
 
 ## 구현 가이드
 
-### Step 1: sessionId 확인 및 requirements.md 경로 파악
+### Step 1: requirements.md 읽기
 
 ```bash
-# 세션 환경 디렉토리 확인
-ls -la .claude/session-env/
-
-# 가장 최신 세션 디렉토리 찾기
-ls -lt .claude/session-env/ | head -5
+# requirements.md 확인
+ls -la state/
 ```
 
 ### Step 2: requirements.md 읽기 및 파싱
@@ -276,7 +273,7 @@ npm run test:cov
 ```
 ✅ 테스트 케이스 생성 완료
 
-📁 저장 위치: .claude/session-env/{sessionId}/test-case.md
+📁 저장 위치: state/test-case.md
 📊 생성된 테스트 케이스:
    - E2E 테스트: N개
    - 단위 테스트: N개
@@ -289,7 +286,7 @@ npm run test:cov
 ## 검증 방법 (DoD)
 
 1. `/test-case` 실행
-2. **DoD 확인 1**: `.claude/session-env/{sessionId}/test-case.md` 파일이 새로 생성되었는가?
+2. **DoD 확인 1**: `state/test-case.md` 파일이 새로 생성되었는가?
 3. **DoD 확인 2**: requirements.md의 각 핵심 기능별로 최소 3개 이상의 E2E 테스트 케이스가 있는가?
 4. **DoD 확인 3**: requirements.md의 각 비즈니스 규칙별 검증 테스트가 있는가?
 5. **DoD 확인 4**: 엔티티/서비스별 단위 테스트가 있는가?

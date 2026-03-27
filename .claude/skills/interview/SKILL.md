@@ -9,7 +9,7 @@ allowed-tools:
 validate_prompt: |
   dod:
     - id: "1"
-      description: "결과 파일이 해당 위치(.claude/session-env/{sessionId}/requirements.md)에 새로 생겼는가"
+      description: "결과 파일이 해당 위치(state/requirements.md)에 새로 생겼는가"
     - id: "2"
       description: "파일에 프로젝트 개요 / 비즈니스 요구사항 및 제한 사항이 적절하게 있는가"
 ---
@@ -28,19 +28,7 @@ validate_prompt: |
 
 ## 구현 가이드
 
-### 1단계: sessionId 획득
-
-먼저 현재 세션의 ID를 확인합니다:
-
-```bash
-# 세션 환경 디렉토리 확인 (Claude Code는 현재 작업 디렉토리 기준으로 관리)
-# .claude/session-env/ 아래에 세션별 디렉토리가 존재
-
-# 혹은 기존 세션 파일이 있는지 확인
-ls -la .claude/session-env/
-```
-
-### 2단계: 인터뷰 진행
+### 1단계: 인터뷰 진행
 
 #### Phase 1: 프로젝트 개요 질문
 
@@ -56,7 +44,7 @@ ls -la .claude/session-env/
 2. **비즈니스 규칙**: 지켜야 할 비즈니스 규칙이나 제약조건은 무엇인가요?
 3. **우선순위**: 기능들의 우선순위는 어떻게 되나요?
 
-### 3단계: 문서 생성
+### 2단계: 문서 생성
 
 다음 형식으로 requirements.md 파일을 생성합니다:
 
@@ -65,7 +53,6 @@ ls -la .claude/session-env/
 
 ## 생성 정보
 - 생성일: YYYY-MM-DD HH:mm:ss
-- 세션 ID: {sessionId}
 
 ---
 
@@ -100,12 +87,12 @@ ls -la .claude/session-env/
 3. {낮음}
 ```
 
-### 4단계: 완료 안내
+### 3단계: 완료 안내
 
 ```
 ✅ 요구사항 인터뷰 완료
 
-📁 저장 위치: .claude/session-env/{sessionId}/requirements.md
+📁 저장 위치: state/requirements.md
 📊 수집된 항목:
    - 프로젝트 개요: 3개 항목
    - 비즈니스 요구사항: N개 항목
@@ -115,7 +102,7 @@ ls -la .claude/session-env/
 
 1. `/interview` 실행
 2. 각 질문에 답변
-3. **DoD 확인 1**: `.claude/session-env/{sessionId}/requirements.md` 파일이 새로 생성되었는가?
+3. **DoD 확인 1**: `state/requirements.md` 파일이 새로 생성되었는가?
 4. **DoD 확인 2**: 파일에 프로젝트 개요 / 비즈니스 요구사항 및 제한 사항이 적절하게 있는가?
 
 ## 주의사항
