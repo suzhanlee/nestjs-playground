@@ -9,6 +9,24 @@
 # Exit on errors but handle glob failures gracefully
 set -e
 
+# Read stdin first
+INPUT=$(cat)
+
+# Extract tool_name
+TOOL_NAME=$(echo "$INPUT" | grep -o '"tool_name":"[^"]*"' | cut -d'"' -f4)
+
+# 1. Check if tool is Skill
+if [[ "$TOOL_NAME" != "Skill" ]]; then
+    exit 0
+fi
+
+# 2. Check if skill is test-case only
+SKILL_NAME=$(echo "$INPUT" | grep -o '"skill":"[^"]*"' | cut -d'"' -f4)
+
+if [[ "$SKILL_NAME" != "test-case" ]]; then
+    exit 0
+fi
+
 # Create log directory
 LOG_DIR=".claude/logs"
 mkdir -p "$LOG_DIR"
@@ -20,64 +38,12 @@ LOG_FILE="$LOG_DIR/hook_test_case_${TIMESTAMP}.log"
 # Log execution
 echo "=== test-case validation hook executed at $(date) ===" >> "$LOG_FILE"
 echo "Working directory: $(pwd)" >> "$LOG_FILE"
-
-# Read stdin
-INPUT=$(cat)
 echo "STDIN input: $INPUT" >> "$LOG_FILE"
-
-# Extract tool_name
-TOOL_NAME=$(echo "$INPUT" | grep -o '"tool_name":"[^"]*"' | cut -d'"' -f4)
 echo "Extracted tool_name: $TOOL_NAME" >> "$LOG_FILE"
-
-# 1. Check if tool is Skill
-if [[ "$TOOL_NAME" != "Skill" ]]; then
-    echo "Not a Skill tool, exiting" >> "$LOG_FILE"
-    exit 0
-fi
-
-# 2. Check if skill is test-case only
-SKILL_NAME=$(echo "$INPUT" | grep -o '"skill":"[^"]*"' | cut -d'"' -f4)
 echo "Extracted skill_name: $SKILL_NAME" >> "$LOG_FILE"
 
-if [[ "$SKILL_NAME" != "test-case" ]]; then
-    echo "Not test-case skill (got: $SKILL_NAME), exiting" >> "$LOG_FILE"
-    exit 0
-fi
-
-# 3. Find sessionId by matching cwd
-CWD=$(pwd)
-echo "Searching for session with cwd: $CWD" >> "$LOG_FILE"
-
-SESSION_ID=""
-SESSIONS_DIR="$HOME/.claude/sessions"
-if [[ -d "$SESSIONS_DIR" ]]; then
-    for session_file in "$SESSIONS_DIR"/*.json; do
-        if [[ -f "$session_file" ]]; then
-            session_cwd=$(jq -r '.cwd // empty' "$session_file" 2>/dev/null || echo "")
-            if [[ "$session_cwd" == "$CWD" ]]; then
-                SESSION_ID=$(jq -r '.sessionId // empty' "$session_file" 2>/dev/null || echo "")
-                echo "Found matching session: $session_file" >> "$LOG_FILE"
-                echo "Session ID: $SESSION_ID" >> "$LOG_FILE"
-                break
-            fi
-        fi
-    done
-fi
-
-if [[ -z "$SESSION_ID" ]]; then
-    echo "No session found for cwd: $CWD" >> "$LOG_FILE"
-    # Output warning to Claude
-    jq -n '{
-      hookSpecificOutput: {
-        hookEventName: "PostToolUse",
-        additionalContext: "⚠️ WARNING: Could not find session ID for current directory. Cannot validate requirements.md existence."
-      }
-    }'
-    exit 0
-fi
-
-# 4. Check if requirements.md exists
-REQUIREMENTS_FILE=".claude/session-env/${SESSION_ID}/requirements.md"
+# 3. Check if requirements.md exists
+REQUIREMENTS_FILE="state/requirements.md"
 echo "Checking for requirements.md: $REQUIREMENTS_FILE" >> "$LOG_FILE"
 
 if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
@@ -86,7 +52,7 @@ if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
     jq -n '{
       hookSpecificOutput: {
         hookEventName: "PostToolUse",
-        additionalContext: "⚠️ WARNING: requirements.md not found in session environment. Please ensure requirements.md exists before running /test-case."
+        additionalContext: "⚠️ WARNING: requirements.md not found in state/. Please ensure requirements.md exists before running /test-case."
       }
     }'
     exit 0
@@ -94,7 +60,7 @@ fi
 
 echo "requirements.md found!" >> "$LOG_FILE"
 
-# 5. Extract validate_prompt from test-case skill file
+# 4. Extract validate_prompt from test-case skill file
 SKILL_FILE=".claude/skills/test-case/SKILL.md"
 echo "Reading skill file: $SKILL_FILE" >> "$LOG_FILE"
 
@@ -113,7 +79,7 @@ if [[ -z "$VALIDATE_PROMPT" ]]; then
     exit 0
 fi
 
-# 6. Generate validation context and output JSON to stdout
+# 5. Generate validation context and output JSON to stdout
 CONTEXT="⚠️ VALIDATION REQUIRED for /test-case
 
 requirements.md found at: ${REQUIREMENTS_FILE}
@@ -144,7 +110,6 @@ JSON_FILE="$LOG_DIR/validation_test_case_${TIMESTAMP}.json"
 cat > "$JSON_FILE" << EOF
 {
   "skill": "test-case",
-  "sessionId": "$SESSION_ID",
   "requirementsFile": "$REQUIREMENTS_FILE",
   "validate_prompt": $(echo "$VALIDATE_PROMPT" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g'),
   "timestamp": "$(date -Iseconds)"
