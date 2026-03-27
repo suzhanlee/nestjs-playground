@@ -19,7 +19,20 @@
 
 set -euo pipefail
 
+# Create log directory
+LOG_DIR=".claude/logs"
+mkdir -p "$LOG_DIR"
+
+# Create timestamped log file
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+LOG_FILE="$LOG_DIR/hook_stop_${TIMESTAMP}.log"
+
+# Log execution
+echo "=== Stop hook executed at $(date) ===" >> "$LOG_FILE"
+echo "Working directory: $(pwd)" >> "$LOG_FILE"
+
 HOOK_INPUT=$(cat)
+echo "STDIN input: $HOOK_INPUT" >> "$LOG_FILE"
 CWD=$(echo "$HOOK_INPUT" | jq -r '.cwd')
 
 SPECS_ROOT="$CWD/.dev/specs"
@@ -98,4 +111,5 @@ if [[ -f "$PLAN_FILE" ]]; then
 fi
 
 # 아무 조건도 해당 없으면 조용히 종료
+echo "=== Stop hook completed ===" >> "$LOG_FILE"
 exit 0

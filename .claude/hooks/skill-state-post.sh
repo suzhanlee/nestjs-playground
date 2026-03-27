@@ -3,8 +3,21 @@
 
 set -euo pipefail
 
+# Create log directory
+LOG_DIR=".claude/logs"
+mkdir -p "$LOG_DIR"
+
+# Create timestamped log file
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+LOG_FILE="$LOG_DIR/hook_skill_state_post_${TIMESTAMP}.log"
+
+# Log execution
+echo "=== skill-state-post hook executed at $(date) ===" >> "$LOG_FILE"
+echo "Working directory: $(pwd)" >> "$LOG_FILE"
+
 # Hook 입력 읽기
 INPUT=$(cat)
+echo "STDIN input: $INPUT" >> "$LOG_FILE"
 
 # 필드 추출
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -35,4 +48,5 @@ jq -n \
   --arg ts "$TIMESTAMP" \
   '{"skill_name": $skill, "status": $status, "timestamp": $ts}' > "$STATE_FILE"
 
+echo "=== skill-state-post hook completed ===" >> "$LOG_FILE"
 exit 0
