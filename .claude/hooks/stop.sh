@@ -16,6 +16,9 @@
 #   - session_id: 현재 세션
 #   - transcript_path: 대화 로그 경로
 #   - cwd: 현재 작업 디렉토리
+#
+# Orchestration:
+#   state.json 기반 스킬 오케스트레이션 (interview → test-case → implement)
 
 set -euo pipefail
 
@@ -34,6 +37,47 @@ echo "Working directory: $(pwd)" >> "$LOG_FILE"
 HOOK_INPUT=$(cat)
 echo "STDIN input: $HOOK_INPUT" >> "$LOG_FILE"
 CWD=$(echo "$HOOK_INPUT" | jq -r '.cwd')
+
+# ============================================================
+# Orchestration: state.json 기반 스킬 오케스트레이션
+# ============================================================
+
+STATE_FILE="$CWD/state/state.json"
+
+if [[ -f "$STATE_FILE" ]]; then
+  SKILL_NAME=$(jq -r '.skill_name // empty' "$STATE_FILE")
+  STATUS=$(jq -r '.status // empty' "$STATE_FILE")
+
+  echo "Orchestration check: skill_name=$SKILL_NAME, status=$STATUS" >> "$LOG_FILE"
+
+  # Only orchestrate if skill ended
+  if [[ "$STATUS" == "end" ]]; then
+    REASON=""
+    DECISION="block"
+
+    case "$SKILL_NAME" in
+      "interview")
+        REASON="Execute: Skill(\"test-case\")"
+        ;;
+      "test-case")
+        REASON="Execute: Skill(\"implement\")"
+        ;;
+      "implement")
+        # Workflow complete - continue
+        DECISION="continue"
+        ;;
+    esac
+
+    if [[ -n "$REASON" ]]; then
+      echo "Orchestration: $SKILL_NAME -> next step" >> "$LOG_FILE"
+      jq -n \
+        --arg decision "$DECISION" \
+        --arg reason "$REASON" \
+        '{decision: $decision, reason: $reason}'
+      exit 0
+    fi
+  fi
+fi
 
 SPECS_ROOT="$CWD/.dev/specs"
 
