@@ -35,15 +35,26 @@ mkdir -p "$STATE_DIR"
 
 STATE_FILE="$STATE_DIR/state.json"
 
+# 대화형 스킬 목록 (사용자 입력이 필요한 스킬)
+INTERACTIVE_SKILLS="interview|implement"
+
 # 현재 시간
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# 대화형 스킬인지 확인
+if [[ "$INTERACTIVE_SKILLS" =~ "$SKILL_NAME" ]]; then
+  IS_INTERACTIVE="true"
+else
+  IS_INTERACTIVE="false"
+fi
 
 # state.json 생성/업데이트
 jq -n \
   --arg skill "$SKILL_NAME" \
   --arg status "start" \
+  --arg interactive "$IS_INTERACTIVE" \
   --arg ts "$TIMESTAMP" \
-  '{"skill_name": $skill, "status": $status, "timestamp": $ts}' > "$STATE_FILE"
+  '{"skill_name": $skill, "status": $status, "interactive": $interactive, "timestamp": $ts}' > "$STATE_FILE"
 
 echo "=== skill-state-pre hook completed ===" >> "$LOG_FILE"
 exit 0

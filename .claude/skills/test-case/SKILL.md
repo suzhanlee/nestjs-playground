@@ -116,7 +116,7 @@ validate_prompt: |
 ### Step 1: requirements.md 읽기
 
 ```bash
-# requirements.md 확인
+# requirements.md 확인 (프로젝트 루트 state/ 디렉토리)
 ls -la state/
 ```
 

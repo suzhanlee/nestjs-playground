@@ -39,7 +39,7 @@ Simply invoke this skill to start the workflow:
 
 ## State File
 
-The workflow state is tracked in `state/state.json`:
+The workflow state is tracked in `state/state.json` (project root, relative to CWD):
 
 ```json
 {
@@ -48,3 +48,5 @@ The workflow state is tracked in `state/state.json`:
   "timestamp": "2026-03-27T10:00:00.000Z"
 }
 ```
+
+**Important**: When this skill completes, update `state/state.json` to set `status: "end"` so the stop hook can trigger the next skill (interview).

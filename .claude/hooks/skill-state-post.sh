@@ -1,5 +1,5 @@
 #!/bin/bash
-# skill-state-post.sh - Skill 완료 시 상태를 "end"로 설정
+# skill-state-post.sh - Skill 완료 시 상태를 "end"로 설정 (대화형 스킬 제외)
 
 set -euo pipefail
 
@@ -38,15 +38,32 @@ if [[ ! -f "$STATE_FILE" ]]; then
   mkdir -p "$STATE_DIR"
 fi
 
+# 대화형 스킬 목록 (사용자 입력이 필요한 스킬)
+INTERACTIVE_SKILLS="interview|implement"
+
 # 현재 시간
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-# state.json 업데이트
-jq -n \
-  --arg skill "$SKILL_NAME" \
-  --arg status "end" \
-  --arg ts "$TIMESTAMP" \
-  '{"skill_name": $skill, "status": $status, "timestamp": $ts}' > "$STATE_FILE"
+# 대화형 스킬인지 확인
+if [[ "$INTERACTIVE_SKILLS" =~ "$SKILL_NAME" ]]; then
+  # 대화형 스킬은 start 상태 유지 (스킬이 직접 완료 처리)
+  echo "Interactive skill detected: $SKILL_NAME, keeping status as 'start'" >> "$LOG_FILE"
+  jq -n \
+    --arg skill "$SKILL_NAME" \
+    --arg status "start" \
+    --arg interactive "true" \
+    --arg ts "$TIMESTAMP" \
+    '{"skill_name": $skill, "status": $status, "interactive": $interactive, "timestamp": $ts}' > "$STATE_FILE"
+else
+  # 즉시 완료형 스킬은 end로 설정
+  echo "Non-interactive skill: $SKILL_NAME, setting status to 'end'" >> "$LOG_FILE"
+  jq -n \
+    --arg skill "$SKILL_NAME" \
+    --arg status "end" \
+    --arg interactive "false" \
+    --arg ts "$TIMESTAMP" \
+    '{"skill_name": $skill, "status": $status, "interactive": $interactive, "timestamp": $ts}' > "$STATE_FILE"
+fi
 
 echo "=== skill-state-post hook completed ===" >> "$LOG_FILE"
 exit 0

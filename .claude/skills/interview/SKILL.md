@@ -46,7 +46,7 @@ validate_prompt: |
 
 ### 2단계: 문서 생성
 
-다음 형식으로 requirements.md 파일을 생성합니다:
+다음 형식으로 `state/requirements.md` 파일을 생성합니다 (프로젝트 루트 state/ 디렉토리):
 
 ```markdown
 # {프로젝트명} 요구사항 문서
@@ -97,6 +97,8 @@ validate_prompt: |
    - 프로젝트 개요: 3개 항목
    - 비즈니스 요구사항: N개 항목
 ```
+
+**중요**: 완료 후 `state/state.json`을 업데이트하여 `status: "end"`, `interactive: "false"`로 설정해야 오케스트레이션이 다음 단계(test-case)로 진행됩니다.
 
 ## 검증 방법 (DoD)
 
