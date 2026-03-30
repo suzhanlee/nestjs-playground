@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './modules/product/product.module';
 import { CategoryModule } from './modules/category/category.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CategoryModule } from './modules/category/category.module';
     // Feature modules (similar to @ComponentScan in Spring)
     ProductModule,
     CategoryModule,
+    InventoryModule,
   ],
   controllers: [],
   providers: [],
