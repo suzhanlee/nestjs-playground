@@ -35,13 +35,14 @@ fi
 # DoD 파일에서 체크되지 않은 항목 파싱
 # 형식: - [ ] TEST_ID:Description
 REMAINING=()
+PATTERN='^- \[ \] ([A-Z]+-[A-Z]+-[0-9]+):(.+)$'
 while IFS= read -r line; do
   if [[ "$line" == "DODEOF" ]]; then
     break
   fi
   # 공백 제거 후 패턴 매칭
   trimmed_line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-  if [[ "$trimmed_line" =~ ^- \[ \] ([A-Z]+-[A-Z]+-[0-9]+):(.+)$ ]]; then
+  if [[ "$trimmed_line" =~ $PATTERN ]]; then
     TEST_ID="${BASH_REMATCH[1]}"
     DESCRIPTION="${BASH_REMATCH[2]}"
     REMAINING+=("${TEST_ID}:${DESCRIPTION}")
@@ -82,9 +83,10 @@ SYSTEM_MESSAGE+="REMAINING_DOD_ITEMS: $REMAINING_COUNT개"$'\n\n'
 SYSTEM_MESSAGE+="$REMAINING_LIST"
 SYSTEM_MESSAGE+=$'\n'
 SYSTEM_MESSAGE+="ACTION_REQUIRED:"$'\n'
-SYSTEM_MESSAGE+="1. dod-validator sub-agent를 실행하여 각 항목 검증"$'\n'
-SYSTEM_MESSAGE+="2. 통과한 항목은 [x]로 변경"$'\n'
-SYSTEM_MESSAGE+="3. 실패한 항목은 이번 반복에서 수정"$'\n\n'
+SYSTEM_MESSAGE+="1. .claude/skills/ralph/ralph-verifier.md를 읽어서 검증 에이전트 구성"$'\n'
+SYSTEM_MESSAGE+="2. ralph-verifier custom-agent를 실행하여 각 항목 검증"$'\n'
+SYSTEM_MESSAGE+="3. 통과한 항목은 [x]로 변경"$'\n'
+SYSTEM_MESSAGE+="4. 실패한 항목은 이번 반복에서 수정"$'\n\n'
 SYSTEM_MESSAGE+="LOOP_INFO: 루프 ${NEW_LOOP_COUNT}회차"$'\n'
 SYSTEM_MESSAGE+="==============================="
 

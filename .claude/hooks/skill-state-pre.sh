@@ -36,7 +36,7 @@ mkdir -p "$STATE_DIR"
 STATE_FILE="$STATE_DIR/state.json"
 
 # 대화형 스킬 목록 (사용자 입력이 필요한 스킬)
-INTERACTIVE_SKILLS="interview|implement"
+INTERACTIVE_SKILLS="interview|implement|ralph"
 
 # 현재 시간
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")

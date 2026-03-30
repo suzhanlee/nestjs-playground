@@ -162,56 +162,35 @@ LOOP_INFO: 루프 <N>회차
 ===============================
 ```
 
-### dod-validator sub-agent 실행
+### ralph-verifier custom-agent 실행
 
 별도 에이전트를 통한 검증(컨텍스트 격리):
 
-1. `subagent_type="general-purpose"`로 dod-validator 에이전트를 포그라운드에서 생성
+1. `.claude/skills/ralph/ralph-verifier.md`를 읽어서 검증 에이전트 프롬프트 구성
+2. `subagent_type="general-purpose"`로 ralph-verifier 에이전트를 포그라운드에서 생성
    - `run_in_background=true` 사용 금지
    - 백그라운드로 생성하면 메인 에이전트가 종료되어 Stop hook이 실행되고 루프가 끊김
-2. DoD 파일 경로와 검증할 항목 리스트를 전달
-3. 검증기는 새로운 컨텍스트에서 실행 — 작업 단계의 편향 없음
-4. 검증기의 결과를 파싱:
+3. DoD 파일 경로와 검증할 항목 리스트를 전달
+4. 검증기는 새로운 컨텍스트에서 실행 — 작업 단계의 편향 없음
+5. 검증기의 결과를 파싱:
    - PASS 항목 → DoD 파일의 `- [ ]`를 `- [x]`로 변경
    - FAIL 항목 → 이번 반복에서 해당 문제를 수정
-5. FAIL 항목이 수정된 경우, 다음 Stop hook이 다시 검증 라운드를 시작
+6. FAIL 항목이 수정된 경우, 다음 Stop hook이 다시 검증 라운드를 시작
 
-### dod-validator 에이전트 프롬프트
+### ralph-verifier 에이전트 프롬프트 구성
+
+ralph-verifier.md 파일을 읽고, 다음 내용을 추가하여 전달:
 
 ```
-다음 DoD 항목들을 검증하고 결과를 JSON으로 반환해주세요:
-
 검증할 항목:
 <remaining DoD items>
 
-검증 방법:
-1. E2E 테스트: npm run test:e2e 실행 및 결과 분석
-2. 단위 테스트: npm test 실행 및 결과 분석
-3. 코드 검증: 파일 존재, 함수 구현 등 직접 확인
-4. API 검증: 실제 HTTP 요청으로 동작 확인
-
-출력 형식 (JSON):
-{
-  "results": [
-    {
-      "test_id": "TC-E2E-001",
-      "description": "모든 필수 필드로 카테고리 생성",
-      "status": "PASS",
-      "evidence": "POST /api/categories 테스트 통과, 201 반환 확인"
-    },
-    {
-      "test_id": "TC-E2E-002",
-      "description": "단건 조회 성공",
-      "status": "FAIL",
-      "evidence": "GET /api/categories/1 테스트 실패, 404 반환"
-    }
-  ]
-}
+프로젝트 경로: <CWD from state.json>
 ```
 
 ### 별도 에이전트를 사용하는 이유
 
-코드를 작성한 에이전트가 스스로 검증해서는 안 됩니다. 검증기 에이전트는 깨끗한 컨텍스트에서 시작하여 실제 파일/테스트를 읽고 객관적으로 판단합니다.
+코드를 작성한 에이전트가 스스로 검증해서는 안 됩니다. ralph-verifier 에이전트는 깨끗한 컨텍스트에서 시작하여 실제 파일을 읽고 객관적으로 판단합니다.
 
 ---
 

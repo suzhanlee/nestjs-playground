@@ -36,6 +36,14 @@ if [[ -f "$STATE_FILE" ]]; then
   echo "Orchestration check: skill_name=$SKILL_NAME, status=$STATUS, interactive=$INTERACTIVE" >> "$LOG_FILE"
 
   # ============================================================
+  # ralph 스킬은 자체 루프를 가지므로 오케스트레이션 제외
+  # ============================================================
+  if [[ "$SKILL_NAME" == "ralph" ]]; then
+    echo "Ralph skill detected, skipping orchestration (using ralph-stop.sh)" >> "$LOG_FILE"
+    exit 0
+  fi
+
+  # ============================================================
   # 대화형 스킬 완료 감지: 결과물 파일 확인
   # ============================================================
   if [[ "$INTERACTIVE" == "true" ]] && [[ "$STATUS" == "start" ]]; then
