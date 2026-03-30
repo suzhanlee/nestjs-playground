@@ -36,7 +36,13 @@ export class CategoryParentChangedEvent implements IDomainEvent {
   readonly oldLevel: number;
   readonly newLevel: number;
 
-  constructor(id: number, oldParentId: number | null, newParentId: number | null, oldLevel: number, newLevel: number) {
+  constructor(
+    id: number,
+    oldParentId: number | null,
+    newParentId: number | null,
+    oldLevel: number,
+    newLevel: number,
+  ) {
     this.aggregateId = id;
     this.oldParentId = oldParentId;
     this.newParentId = newParentId;
