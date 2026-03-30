@@ -356,7 +356,9 @@ describe('CategoryApplicationService', () => {
       const newParent = { ...mockCategory, id: 5, level: 0 };
       const category = { ...mockCategory, id: 2, level: 1 };
       repository.findById.mockResolvedValue(category as Category);
-      repository.findById.mockResolvedValueOnce(category as Category).mockResolvedValueOnce(newParent as Category);
+      repository.findById
+        .mockResolvedValueOnce(category as Category)
+        .mockResolvedValueOnce(newParent as Category);
       repository.isDescendant.mockResolvedValue(false);
       repository.save.mockResolvedValue(category as Category);
       repository.count.mockResolvedValue(2);

@@ -259,7 +259,9 @@ export class Category {
     this._level = newLevel;
 
     // Emit domain event
-    this.addEvent(new CategoryParentChangedEvent(this._id, oldParentId, newParentId, oldLevel, newLevel));
+    this.addEvent(
+      new CategoryParentChangedEvent(this._id, oldParentId, newParentId, oldLevel, newLevel),
+    );
   }
 
   // ========================================

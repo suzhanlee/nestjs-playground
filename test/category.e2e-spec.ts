@@ -14,11 +14,13 @@ describe('Category E2E Tests', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    );
     await app.init();
 
     dataSource = app.get(DataSource);
@@ -245,17 +247,11 @@ describe('Category E2E Tests', () => {
   describe('GET /api/categories', () => {
     it('TC-E2E-015: [P0] should return all categories', async () => {
       // Given: 여러 카테고리가 존재
-      await request(app.getHttpServer())
-        .post('/api/categories')
-        .send({ name: '전자기기' });
-      await request(app.getHttpServer())
-        .post('/api/categories')
-        .send({ name: '가전제품' });
+      await request(app.getHttpServer()).post('/api/categories').send({ name: '전자기기' });
+      await request(app.getHttpServer()).post('/api/categories').send({ name: '가전제품' });
 
       // When: GET /api/categories
-      const response = await request(app.getHttpServer())
-        .get('/api/categories')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/api/categories').expect(200);
 
       // Then: 200 OK, 모든 카테고리 배열 반환
       expect(Array.isArray(response.body)).toBe(true);
@@ -266,9 +262,7 @@ describe('Category E2E Tests', () => {
       // Given: 카테고리가 없음 (단, 최소 1개 유지 규칙으로 테스트 제한됨)
 
       // When: GET /api/categories
-      const response = await request(app.getHttpServer())
-        .get('/api/categories')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/api/categories').expect(200);
 
       // Then: 200 OK, 빈 배열 반환
       expect(Array.isArray(response.body)).toBe(true);
@@ -329,18 +323,14 @@ describe('Category E2E Tests', () => {
 
     it('TC-E2E-022: [P1] should return 404 when ID is 0', async () => {
       // Given: id: 0
-      const response = await request(app.getHttpServer())
-        .get('/api/categories/0')
-        .expect(404);
+      const response = await request(app.getHttpServer()).get('/api/categories/0').expect(404);
 
       // Then: 404 Not Found
     });
 
     it('TC-E2E-023: [P1] should return 400 when ID is negative', async () => {
       // Given: id: -1
-      const response = await request(app.getHttpServer())
-        .get('/api/categories/-1')
-        .expect(404); // 또는 400
+      const response = await request(app.getHttpServer()).get('/api/categories/-1').expect(404); // 또는 400
 
       // Then: 400 Bad Request 또는 404 Not Found
     });
@@ -452,9 +442,7 @@ describe('Category E2E Tests', () => {
 
     it('TC-E2E-031: [P0] should return 409 when name already exists', async () => {
       // Given: 존재하는 카테고리와 이미 존재하는 다른 카테고리의 이름
-      await request(app.getHttpServer())
-        .post('/api/categories')
-        .send({ name: '전자기기' });
+      await request(app.getHttpServer()).post('/api/categories').send({ name: '전자기기' });
       const toUpdate = await request(app.getHttpServer())
         .post('/api/categories')
         .send({ name: '가전제품' });
@@ -481,14 +469,10 @@ describe('Category E2E Tests', () => {
         .send({ name: '전자기기' });
 
       // When: DELETE /api/categories/:id
-      await request(app.getHttpServer())
-        .delete(`/api/categories/${created.body.id}`)
-        .expect(204);
+      await request(app.getHttpServer()).delete(`/api/categories/${created.body.id}`).expect(204);
 
       // Then: 204 No Content
-      await request(app.getHttpServer())
-        .get(`/api/categories/${created.body.id}`)
-        .expect(404);
+      await request(app.getHttpServer()).get(`/api/categories/${created.body.id}`).expect(404);
     });
 
     it('TC-E2E-036: [P0] should return 404 when deleting non-existent ID', async () => {
@@ -583,9 +567,7 @@ describe('Category E2E Tests', () => {
         .send({ name: '노트북', parentId: root.body.id });
 
       // When: GET /api/categories/root
-      const response = await request(app.getHttpServer())
-        .get('/api/categories/root')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/api/categories/root').expect(200);
 
       // Then: Only root categories returned
       expect(response.body.every((cat: any) => cat.parentId === null)).toBe(true);
@@ -675,12 +657,8 @@ describe('Category E2E Tests', () => {
   describe('GET /api/categories/count/total', () => {
     it('should return total category count', async () => {
       // Given
-      await request(app.getHttpServer())
-        .post('/api/categories')
-        .send({ name: '전자기기' });
-      await request(app.getHttpServer())
-        .post('/api/categories')
-        .send({ name: '가전제품' });
+      await request(app.getHttpServer()).post('/api/categories').send({ name: '전자기기' });
+      await request(app.getHttpServer()).post('/api/categories').send({ name: '가전제품' });
 
       // When
       const response = await request(app.getHttpServer())

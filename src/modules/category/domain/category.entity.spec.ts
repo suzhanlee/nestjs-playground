@@ -93,7 +93,9 @@ describe('Category Entity', () => {
       const parentLevel = 2;
 
       // When & Then
-      expect(() => Category.create({ name, parentId, parentLevel })).toThrow(CategoryDepthExceededException);
+      expect(() => Category.create({ name, parentId, parentLevel })).toThrow(
+        CategoryDepthExceededException,
+      );
     });
 
     it('should create category with isActive = false', () => {
@@ -308,7 +310,9 @@ describe('Category Entity', () => {
       const newParentLevel = 2; // 새로운 level은 3이 되어야 함
 
       // When & Then
-      expect(() => category.changeParent(newParentId, newParentLevel)).toThrow(CategoryDepthExceededException);
+      expect(() => category.changeParent(newParentId, newParentLevel)).toThrow(
+        CategoryDepthExceededException,
+      );
     });
 
     it('should throw exception when circular reference detected (self)', () => {
@@ -342,7 +346,9 @@ describe('Category Entity', () => {
 
       // Then
       const events = category.domainEvents;
-      const activatedEvent = events.find((e: any) => e.constructor.name === 'CategoryActivatedEvent');
+      const activatedEvent = events.find(
+        (e: any) => e.constructor.name === 'CategoryActivatedEvent',
+      );
       expect(activatedEvent).toBeDefined();
     });
 
@@ -380,7 +386,9 @@ describe('Category Entity', () => {
 
       // Then
       const events = category.domainEvents;
-      const deactivatedEvent = events.find((e: any) => e.constructor.name === 'CategoryDeactivatedEvent');
+      const deactivatedEvent = events.find(
+        (e: any) => e.constructor.name === 'CategoryDeactivatedEvent',
+      );
       expect(deactivatedEvent).toBeDefined();
     });
 

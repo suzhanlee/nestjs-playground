@@ -1,12 +1,14 @@
-import { Injectable, NotFoundException, Inject, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Category } from '../../domain';
 import { ICategoryRepository } from '../../domain/repositories/category.repository.interface';
 import { IEventDispatcher } from '../../../../common';
-import {
-  CreateCategoryRequestDto,
-  UpdateCategoryRequestDto,
-  CategoryResponseDto,
-} from '../dto';
+import { CreateCategoryRequestDto, UpdateCategoryRequestDto, CategoryResponseDto } from '../dto';
 import {
   CategoryAlreadyExistsException,
   CategoryHasProductsException,
@@ -208,7 +210,11 @@ export class CategoryApplicationService {
   /**
    * Create a child category
    */
-  async createChild(parentId: number, name: string, isActive?: boolean): Promise<CategoryResponseDto> {
+  async createChild(
+    parentId: number,
+    name: string,
+    isActive?: boolean,
+  ): Promise<CategoryResponseDto> {
     const parent = await this.requireCategory(parentId);
 
     // Check parent level (max 2 for parent to allow level 2 child)

@@ -104,10 +104,7 @@ export class CategoryController {
     @Param('id') id: string,
     @Query('includeDescendants') includeDescendants?: string,
   ): Promise<any[]> {
-    return await this.applicationService.findProducts(
-      +id,
-      includeDescendants === 'true',
-    );
+    return await this.applicationService.findProducts(+id, includeDescendants === 'true');
   }
 
   /**
