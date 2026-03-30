@@ -18,7 +18,7 @@ This skill initializes the development workflow that guides you through feature 
 The orchestration follows this sequence:
 
 ```
-interview → test-case → implement
+interview → test-case → ralph
 ```
 
 After each skill completes, the stop hook will automatically guide you to the next step.

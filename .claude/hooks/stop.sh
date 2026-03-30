@@ -80,10 +80,6 @@ if [[ -f "$STATE_FILE" ]]; then
           INTERACTIVE="false"
         fi
         ;;
-      "implement")
-        # implement는 테스트 통과를 통해 완료 확인 (별도 검증 필요)
-        echo "Implement skill: manual completion check required" >> "$LOG_FILE"
-        ;;
     esac
 
     echo "After auto-completion check: status=$STATUS, interactive=$INTERACTIVE" >> "$LOG_FILE"
@@ -109,13 +105,9 @@ Execute: Skill(\"interview\")"
 Execute: Skill(\"test-case\")"
         ;;
       "test-case")
-        REASON="테스트 케이스 생성 완료! 이제 구현을 시작합니다.
+        REASON="테스트 케이스 생성 완료! 이제 DoD 기반 반복 구현을 시작합니다.
 
-Execute: Skill(\"implement\")"
-        ;;
-      "implement")
-        # Workflow complete - continue
-        DECISION="continue"
+Execute: Skill(\"ralph\", \"test-case.md 기반으로 구현해줘\")"
         ;;
     esac
 
@@ -133,9 +125,9 @@ fi
 # ============================================================
 # 스킬 오케스트레이션 완료 메시지
 # ============================================================
-if [[ -n "${SKILL_NAME:-}" ]] && [[ "$SKILL_NAME" == "implement" ]] && [[ "$STATUS" == "end" ]]; then
+if [[ -n "${SKILL_NAME:-}" ]] && [[ "$SKILL_NAME" == "ralph" ]] && [[ "$STATUS" == "end" ]]; then
   echo "🎉 모든 스킬 오케스트레이션이 완료되었습니다!" >&2
-  echo "interview → test-case → implement" >&2
+  echo "interview → test-case → ralph" >&2
   echo "" >&2
   echo "다음 단계:" >&2
   echo "- 코드가 제대로 작동하는지 테스트하세요" >&2
